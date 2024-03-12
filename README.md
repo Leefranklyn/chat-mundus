@@ -14,14 +14,13 @@
 ## HARDWARE COMPATIBILITY
 Our web application is platform independent and can run on various hardware systems. Technologies, dependencies, frameworks and our database system pose no problems and are compatible with many hardware configurations.
 
-## STACK
-Node JS
-Express Js
-MongoDB
-Bcrypt
-Jsonwebtoken
-dotenv
-joi validator
+## STACK AND DEPENDENCIES
+> Rutime: Node Js
+> Framework: Express Js
+> Database: MongoDB
+> Encryption: Bcrypt
+> Authorization/Authentication: Jsonwebtoken
+> Input Validation: joi validator
 
 > #### To run the app on your local computer
 >
