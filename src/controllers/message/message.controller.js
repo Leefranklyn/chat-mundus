@@ -8,6 +8,12 @@ export const sendMessage = async (req, res) => {
         const receiverId = req.params.id;
         const { message } = req.body;
 
+        const user = await User.findById(senderId);
+
+        if(!user.friends.includes(receiverId)) {
+            return res.status(403).json({success: false, error: "You cannot send a message to this user until they accpet your friend request"})
+        };
+
         let conversation = await Conversation.findOne({ participants: { $all: [senderId, receiverId] } });
         if (!conversation) {
             conversation = new Conversation({

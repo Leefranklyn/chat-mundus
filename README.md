@@ -45,7 +45,7 @@ joi validator
 
 > ### Commit Categories:
 
-> - _build:_ Changes that affect the build system or external dependencies (example npm)
+> - _build:_ Changes that affect the build system or external dependencies (example np
 > - _docs:_ Documentation only changes
 > - _feat:_ A new feature
 > - _fix:_ A bug fix
