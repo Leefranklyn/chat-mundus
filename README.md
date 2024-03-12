@@ -30,7 +30,7 @@
 >
 > - npm build
 
-> ## Git Branch Naming Conventions
+ ## Git Branch Naming Conventions
 >
 > ### Branch Categories:
 >
@@ -39,7 +39,7 @@
 > - _hotfix_ is for changing code with a temporary solution and/or without following the usual process (usually because of an emergency)
 > - _test_ is for experimenting outside of an issue/ticket
 >
-> ## Git Commit Message Pattern
+ ## Git Commit Message Pattern
 
 > ### Commit Categories:
 
