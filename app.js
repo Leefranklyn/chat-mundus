@@ -1,13 +1,13 @@
-import "dotenv/config";
+// import logger from "morgan";
 import express from "express";
+import "dotenv/config";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { connectToDb } from "./src/config/db.js";
-// import logger from "morgan";
 import routers from "./src/routes/index.js";
 import { logger, expressLogger, expressErrorLogger } from "./src/utils/logger.js";
+import { app, server } from "./src/socket/socket.js";
 
-const app = express();
 connectToDb();
 app.use(expressLogger);
 app.use(cors({origin: '*'}));
@@ -25,6 +25,6 @@ app.use((err, req, res, next) => {
 
 const port = process.env.PORT;
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`app listening on {port}: ${port}`)
 })

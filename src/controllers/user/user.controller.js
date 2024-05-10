@@ -1,12 +1,34 @@
 import User from "../../models/user/user.model.js";
 
+export const getloggedInUserInfo = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        if(!user) {
+            return res.status(404).json({message: "User not found"})
+        };
+
+        res.status(200).json({
+            success: true,
+            user: user
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: "An error Occured"
+        })
+    }
+}
+
 export const searchForUsers = async (req, res) => {
     try {
         const { fullName } = req.query;
-        const regex = new RegExp(fullName, "i");
+        const name = new RegExp(fullName, "i");
+        console.log(name)
 
-        const users = await User.find({ fullName: regex });
-        if (!users) {
+        const users = await User.find({ fullName: { $regex: name } });
+        if (!users || users.length <= 0) {
             return res.status(400).json({
                 success: false,
                 message: "No Users Found"
@@ -24,7 +46,7 @@ export const searchForUsers = async (req, res) => {
     }
 };
 
-export const sendFriendRequest = async(req, res) => {
+export const sendFriendRequest = async (req, res) => {
     try {
         const senderId = req.user.id;
         const receiverId = req.params.id;
@@ -33,19 +55,21 @@ export const sendFriendRequest = async(req, res) => {
         const sendingtUser = await User.findById(senderId);
 
 
-        if(!recepientUser) {
-            return res.status(404).json({success: false,
-            error: "User Not Found"})
+        if (!recepientUser) {
+            return res.status(404).json({
+                success: false,
+                error: "User Not Found"
+            })
         };
 
-        recepientUser.receivedFriendRequests.push({user: senderId})
+        recepientUser.receivedFriendRequests.push({ user: senderId })
         await recepientUser.save();
-        sendingtUser.sentFriendRequests.push({user: receiverId});
+        sendingtUser.sentFriendRequests.push({ user: receiverId });
         await sendingtUser.save();
 
         res.status(200).json({ success: true, message: 'Friend request sent successfully' });
 
-    
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, error: 'Error Sending Request' });
@@ -61,7 +85,7 @@ export const viewReceivedFriendRequests = async (req, res) => {
             select: "fullName"
         });
 
-        res.status(200).json({success: true, receivedRequests: user.receivedFriendRequests});
+        res.status(200).json({ success: true, receivedRequests: user.receivedFriendRequests });
 
     } catch (error) {
         console.error(error);
@@ -77,7 +101,7 @@ export const viewSentFriendRequests = async (req, res) => {
             select: "fullName"
         });
 
-        res.status(200).json({success: true, sentRequests: user.sentFriendRequests});
+        res.status(200).json({ success: true, sentRequests: user.sentFriendRequests });
 
     } catch (error) {
         console.error(error);
@@ -85,20 +109,20 @@ export const viewSentFriendRequests = async (req, res) => {
     };
 };
 
-export const acceptFriendRequest = async(req, res) => {
+export const acceptFriendRequest = async (req, res) => {
     try {
         const userId = req.user.id;
         const senderId = req.params.id;
 
         await User.findByIdAndUpdate(senderId, {
-            $set: {"sentFriendRequests.$[elem].status": "accepted"},
-            $addToSet: {friends: userId}
-        }, {arrayFilters: [{"elem.user": userId}]});
+            $set: { "sentFriendRequests.$[elem].status": "accepted" },
+            $addToSet: { friends: userId }
+        }, { arrayFilters: [{ "elem.user": userId }] });
 
         await User.findByIdAndUpdate(userId, {
-            $set: {"receivedFriendRequests.$[elem].status": "accepted"},
-            $addToSet: {friends: senderId}
-        }, {arrayFilters: [{"elem.user": senderId}]});
+            $set: { "receivedFriendRequests.$[elem].status": "accepted" },
+            $addToSet: { friends: senderId }
+        }, { arrayFilters: [{ "elem.user": senderId }] });
 
         res.status(200).json({ success: true, message: 'Friend request accepted successfully' });
 
